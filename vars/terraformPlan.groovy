@@ -1,6 +1,23 @@
-def call(Map config=[:]) {
-    sh """
-        terraform init
-        terraform plan -var-file=${config.varFile}
-    """
+def call(Map config = [:]) {
+
+    String workingDir = config.workingDir ?: '.'
+    String varFile    = config.varFile ?: ''
+
+    dir(workingDir) {
+
+        sh 'terraform init'
+
+        if (varFile?.trim()) {
+
+            sh """
+                terraform plan \
+                -var-file=${varFile}
+            """
+
+        } else {
+
+            sh 'terraform plan'
+
+        }
+    }
 }
