@@ -1,19 +1,30 @@
-def call(Map config=[:]) {
+def call(Map config = [:]) {
 
     stage('FMT') {
-        terraformFmt()
+
+        terraformFmt(
+            workingDir: config.workingDir
+        )
     }
 
     stage('VALIDATE') {
-        terraformValidate()
+
+        terraformValidate(
+            workingDir: config.workingDir
+        )
     }
 
     stage('LINT') {
-        terraformLint()
+
+        terraformLint(
+            workingDir: config.workingDir
+        )
     }
 
     stage('PLAN') {
+
         terraformPlan(
+            workingDir: config.workingDir,
             varFile: config.varFile
         )
     }
