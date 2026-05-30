@@ -5,19 +5,30 @@ def call(Map config = [:]) {
 
     dir(workingDir) {
 
-        sh 'terraform init'
+        withCredentials([
+            usernamePassword(
+                credentialsId: 'Github-Token-Shreyas',
+                usernameVariable: 'GIT_USER',
+                passwordVariable: 'GIT_TOKEN'
+            )
+        ]) {
 
-        if (varFile?.trim()) {
+            sh '''
+                git config --global url."https://${GIT_USER}:${GIT_TOKEN}@github.com/".insteadOf "https://github.com/"
+            '''
 
-            sh """
-                terraform plan \
-                -var-file=${varFile}
-            """
+            sh 'terraform init'
 
-        } else {
+            if (varFile?.trim()) {
 
-            sh 'terraform plan'
+                sh """
+                    terraform plan -var-file=${varFile}
+                """
 
+            } else {
+
+                sh 'terraform plan'
+            }
         }
     }
 }
