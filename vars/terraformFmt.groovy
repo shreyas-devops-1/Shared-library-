@@ -1,3 +1,9 @@
-def call() {
-    sh 'terraform fmt -check -recursive'
+def call(Map config = [:]) {
+
+    String workingDir = config.workingDir ?: '.'
+
+    dir(workingDir) {
+
+        sh 'terraform fmt -check -recursive'
+    }
 }
