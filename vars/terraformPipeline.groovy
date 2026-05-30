@@ -1,33 +1,20 @@
 def call(Map config=[:]) {
-    pipeline {
-        agent any
 
-        stages {
-            stage('FMT') {
-                steps {
-                    terraformFmt()
-                }
-            }
+    stage('FMT') {
+        terraformFmt()
+    }
 
-            stage('VALIDATE') {
-                steps {
-                    terraformValidate()
-                }
-            }
+    stage('VALIDATE') {
+        terraformValidate()
+    }
 
-            stage('LINT') {
-                steps {
-                    terraformLint()
-                }
-            }
+    stage('LINT') {
+        terraformLint()
+    }
 
-            stage('PLAN') {
-                steps {
-                    terraformPlan(
-                        varFile: config.varFile
-                    )
-                }
-            }
-        }
+    stage('PLAN') {
+        terraformPlan(
+            varFile: config.varFile
+        )
     }
 }
