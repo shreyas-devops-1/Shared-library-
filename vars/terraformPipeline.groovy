@@ -1,20 +1,23 @@
-def call(Map config=[:]) {
+def call(Map config = [:]) {
 
-    stage('FMT') {
-        terraformFmt()
-    }
+    String workingDir = config.workingDir ?: '.'
+    String varFile    = config.varFile ?: ''
 
-    stage('VALIDATE') {
-        terraformValidate()
-    }
+    dir(workingDir) {
 
-    stage('LINT') {
-        terraformLint()
-    }
+        sh 'terraform init'
 
-    stage('PLAN') {
-        terraformPlan(
-            varFile: config.varFile
-        )
+        if (varFile?.trim()) {
+
+            sh """
+                terraform plan \
+                -var-file=${varFile}
+            """
+
+        } else {
+
+            sh 'terraform plan'
+
+        }
     }
 }
